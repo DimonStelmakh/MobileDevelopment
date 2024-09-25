@@ -1,44 +1,63 @@
-fun main() {
-    val H = 1.5
-    val C = 76.4
-    val S = 1.7
-    val N = 0.8
-    val O = 1.3
-    val W = 5.0
-    val A = 13.3
+package com.example.fuelcalculator
 
-    val dryFactor = 1 - W / 100
-    val C_dryMass = C / dryFactor
-    val H_dryMass = H / dryFactor
-    val S_dryMass = S / dryFactor
-    val N_dryMass = N / dryFactor
-    val O_dryMass = O / dryFactor
-    val A_dryMass = A / dryFactor
+import android.os.Bundle
+import android.widget.Button
+import android.widget.EditText
+import android.widget.TextView
+import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 
-    val combustibleFactor = 1 - A_dryMass / 100
-    val C_combustibleMass = C_dryMass / combustibleFactor
-    val H_combustibleMass = H_dryMass / combustibleFactor
-    val S_combustibleMass = S_dryMass / combustibleFactor
-    val N_combustibleMass = N_dryMass / combustibleFactor
-    val O_combustibleMass = O_dryMass / combustibleFactor
+class MainActivity : AppCompatActivity() {
 
-    val lowerHeatingValue = 338 * C + 1442 * (H - O / 8) + 94 * S
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_main)
 
-    // Виведення результатів
-    println("Склад сухої маси:")
-    println("C: %.2f%%".format(C_dryMass))
-    println("H: %.2f%%".format(H_dryMass))
-    println("S: %.2f%%".format(S_dryMass))
-    println("N: %.2f%%".format(N_dryMass))
-    println("O: %.2f%%".format(O_dryMass))
-    println("A: %.2f%%".format(A_dryMass))
+        val inputH = findViewById<EditText>(R.id.inputH)
+        val inputC = findViewById<EditText>(R.id.inputC)
+        val inputS = findViewById<EditText>(R.id.inputS)
+        val inputN = findViewById<EditText>(R.id.inputN)
+        val inputO = findViewById<EditText>(R.id.inputO)
+        val inputW = findViewById<EditText>(R.id.inputW)
+        val inputA = findViewById<EditText>(R.id.inputA)
+        val calculateButton = findViewById<Button>(R.id.calculateButton)
+        val resultText = findViewById<TextView>(R.id.resultText)
 
-    println("\nСклад горючої маси:")
-    println("C: %.2f%%".format(C_combustibleMass))
-    println("H: %.2f%%".format(H_combustibleMass))
-    println("S: %.2f%%".format(S_combustibleMass))
-    println("N: %.2f%%".format(N_combustibleMass))
-    println("O: %.2f%%".format(O_combustibleMass))
+        calculateButton.setOnClickListener {
+            try {
+                val H = inputH.text.toString().toDouble()
+                val C = inputC.text.toString().toDouble()
+                val S = inputS.text.toString().toDouble()
+                val N = inputN.text.toString().toDouble()
+                val O = inputO.text.toString().toDouble()
+                val W = inputW.text.toString().toDouble()
+                val A = inputA.text.toString().toDouble()
 
-    println("\nНижча теплота згоряння: %.2f кДж/кг".format(lowerHeatingValue))
+                // Розрахунки сухої та горючої маси
+                val dryFactor = 1 - W / 100
+                val C_dry = C / dryFactor
+                val H_dry = H / dryFactor
+                val S_dry = S / dryFactor
+                val N_dry = N / dryFactor
+                val O_dry = O / dryFactor
+                val A_dry = A / dryFactor
+
+                val combustibleFactor = 1 - A_dry / 100
+                val C_combustible = C_dry / combustibleFactor
+                val H_combustible = H_dry / combustibleFactor
+                val S_combustible = S_dry / combustibleFactor
+                val N_combustible = N_dry / combustibleFactor
+                val O_combustible = O_dry / combustibleFactor
+
+                // Розрахунок нижчої теплоти згоряння (LHV)
+                val LHV = 338 * C + 1442 * (H - O / 8) + 94 * S
+
+                // Виведення результатів
+                resultText.text = "Нижча теплота згоряння: %.2f кДж/кг".format(LHV)
+
+            } catch (e: Exception) {
+                Toast.makeText(this, "Будь ласка, введіть правильні числові значення!", Toast.LENGTH_SHORT).show()
+            }
+        }
+    }
 }
